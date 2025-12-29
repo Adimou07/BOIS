@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $product->seo_title ?: $product->name . ' - WoodShop Pro')
+@section('title', $product->seo_title ?: $product->name . ' - WoodShop')
 @section('meta_description', $product->meta_description ?: $product->short_description)
 
 @section('content')
@@ -127,7 +127,7 @@
             </div>
 
             <!-- Calculateur de quantité -->
-            <div class="mt-8" x-data="{ quantity: {{ $product->min_order_quantity }}, total: 0 }" x-init="total = quantity * {{ $product->getPriceForUser(auth()->user()?->isProfessional()) }}">
+            <div class="mt-8" x-data="cartComponent({{ $product->min_order_quantity }}, {{ $product->getPriceForUser(auth()->user()?->isProfessional()) }}, '{{ route('cart.add', $product) }}', '{{ route('cart.count') }}')">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Commande</h3>
                 
                 <div class="space-y-4">
@@ -161,9 +161,17 @@
                     </div>
                     
                     <button type="button" 
-                            class="w-full bg-amber-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-amber-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                            :disabled="quantity < {{ $product->min_order_quantity }} || quantity > {{ $product->stock_quantity }}">
-                        Ajouter au panier
+                            @click="addToCart()"
+                            :disabled="adding || quantity < {{ $product->min_order_quantity }} || quantity > {{ $product->stock_quantity }}"
+                            class="w-full bg-amber-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-amber-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed">
+                        <span x-show="!adding">Ajouter au panier</span>
+                        <span x-show="adding" class="flex items-center justify-center">
+                            <svg class="animate-spin h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="m15.84 12.48-1.84-1.84.84-.84 2.68 2.68-2.68 2.68-.84-.84z"></path>
+                            </svg>
+                            Ajout en cours...
+                        </span>
                     </button>
                 </div>
             </div>
@@ -178,21 +186,6 @@
             </div>
             @endif
 
-            <!-- Conseils -->
-            <div class="mt-8 bg-blue-50 p-4 rounded-lg">
-                <h4 class="text-sm font-medium text-blue-900 mb-2">💡 Conseils d'utilisation</h4>
-                <ul class="text-sm text-blue-700 space-y-1">
-                    @if($product->usage_type === 'chauffage' || $product->usage_type === 'both')
-                    <li>• Stockez votre bois dans un endroit sec et aéré</li>
-                    <li>• Laissez sécher 6 mois minimum avant utilisation</li>
-                    @endif
-                    @if($product->usage_type === 'cuisson' || $product->usage_type === 'both')
-                    <li>• Idéal pour barbecue, four à pizza et cuisine au feu de bois</li>
-                    <li>• Bois non traité, sans produits chimiques</li>
-                    @endif
-                    <li>• Livraison possible selon votre zone géographique</li>
-                </ul>
-            </div>
         </div>
     </div>
 
@@ -234,4 +227,5 @@
     </div>
     @endif
 </div>
+
 @endsection

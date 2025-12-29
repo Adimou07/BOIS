@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Inscription - WoodShop Pro')
-@section('meta_description', 'Créez votre compte WoodShop Pro pour commander du bois de qualité en ligne.')
+@section('title', 'Inscription - WoodShop')
+@section('meta_description', 'Créez votre compte WoodShop pour commander du bois de qualité en ligne.')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

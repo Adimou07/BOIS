@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Réinitialisation de votre mot de passe - WoodShop Pro</title>
+    <title>Réinitialisation de votre mot de passe - WoodShop</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -113,14 +113,14 @@
     <div class="container">
         <div class="header">
             <div class="logo">W</div>
-            <h1>WoodShop Pro</h1>
+            <h1>WoodShop</h1>
         </div>
         
         <div class="content">
             <p class="greeting">Bonjour {{ $user->name }},</p>
             
             <div class="message">
-                <p>Vous avez demandé la réinitialisation de votre mot de passe pour votre compte WoodShop Pro.</p>
+                <p>Vous avez demandé la réinitialisation de votre mot de passe pour votre compte WoodShop.</p>
                 
                 <p>Cliquez sur le bouton ci-dessous pour définir un nouveau mot de passe :</p>
                 
@@ -140,12 +140,12 @@
             
             <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
             
-            <p>Cordialement,<br>L'équipe WoodShop Pro</p>
+            <p>Cordialement,<br>L'équipe WoodShop</p>
         </div>
         
         <div class="footer">
-            <p>Cet email a été envoyé par <a href="{{ config('app.url') }}">WoodShop Pro</a></p>
-            <p style="margin-top: 8px;">© {{ date('Y') }} WoodShop Pro. Tous droits réservés.</p>
+            <p>Cet email a été envoyé par <a href="{{ config('app.url') }}">WoodShop</a></p>
+            <p style="margin-top: 8px;">© {{ date('Y') }} WoodShop. Tous droits réservés.</p>
         </div>
     </div>
 </body>

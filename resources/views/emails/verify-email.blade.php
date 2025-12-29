@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmez votre adresse email - WoodShop Pro</title>
+    <title>Confirmez votre adresse email - WoodShop</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -73,14 +73,14 @@
         <!-- Header -->
         <div class="header">
             <div class="logo">W</div>
-            <h1>WoodShop Pro</h1>
+            <h1>WoodShop</h1>
             <p>Votre spécialiste en bois de chauffage et cuisson</p>
         </div>
 
         <!-- Content -->
         <h2>Bienvenue {{ $user->name }} !</h2>
         
-        <p>Merci de vous être inscrit sur <strong>WoodShop Pro</strong> ! 
+        <p>Merci de vous être inscrit sur <strong>WoodShop</strong> ! 
         @if($user->isProfessional())
             Votre compte professionnel est presque prêt.
         @else
@@ -128,13 +128,13 @@
         <!-- Instructions -->
         <p style="text-align: center; margin: 20px 0;">
             <a href="{{ url('/') }}" style="color: #d97706; text-decoration: none; font-weight: bold;">
-                👉 Retourner sur WoodShop Pro pour saisir le code
+                👉 Retourner sur WoodShop pour saisir le code
             </a>
         </p>
 
         <!-- Footer -->
         <div class="footer">
-            <p><strong>WoodShop Pro</strong> - Votre spécialiste bois de chauffage et cuisson</p>
+            <p><strong>WoodShop</strong> - Votre spécialiste bois de chauffage et cuisson</p>
             <p>Cet email a été envoyé à {{ $user->email }} suite à votre inscription sur notre site.</p>
             <p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email.</p>
         </div>

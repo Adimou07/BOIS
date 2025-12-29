@@ -117,7 +117,7 @@ class AuthController extends Controller
 
             $message = $user->isProfessional() 
                 ? 'Connexion réussie ! Bienvenue dans votre espace professionnel.'
-                : 'Connexion réussie ! Bienvenue sur WoodShop Pro.';
+                : 'Connexion réussie ! Bienvenue sur WoodShop.';
 
             return redirect()->intended(route('catalog.index'))
                 ->with('success', $message);
@@ -202,7 +202,7 @@ class AuthController extends Controller
             $user->save();
 
             return redirect()->route('catalog.index')
-                ->with('success', 'Email vérifié avec succès ! Bienvenue sur WoodShop Pro.');
+                ->with('success', 'Email vérifié avec succès ! Bienvenue sur WoodShop.');
         }
 
         return redirect()->back()
@@ -358,7 +358,7 @@ class AuthController extends Controller
 
         Mail::send('emails.password-reset', $emailData, function($message) use ($user) {
             $message->to($user->email, $user->name)
-                    ->subject('Réinitialisation de votre mot de passe - WoodShop Pro');
+                    ->subject('Réinitialisation de votre mot de passe - WoodShop');
         });
     }
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Mot de passe oublié - WoodShop Pro')
-@section('meta_description', 'Réinitialisez votre mot de passe WoodShop Pro en saisissant votre adresse email.')
+@section('title', 'Mot de passe oublié - WoodShop')
+@section('meta_description', 'Réinitialisez votre mot de passe WoodShop en saisissant votre adresse email.')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

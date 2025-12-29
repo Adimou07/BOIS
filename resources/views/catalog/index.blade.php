@@ -115,9 +115,16 @@
         <div class="lg:col-span-3 mt-8 lg:mt-0">
             <!-- Tri et résultats -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-                <p class="text-sm text-gray-700 mb-4 sm:mb-0">
-                    {{ $products->total() }} produit(s) trouvé(s)
-                </p>
+                @php
+                    $hasFilters = request()->hasAny(['category', 'wood_type', 'usage_type', 'conditioning', 'price_min', 'price_max', 'q']);
+                @endphp
+                @if($hasFilters)
+                    <p class="text-sm text-gray-700 mb-4 sm:mb-0">
+                        {{ $products->total() }} produit(s) trouvé(s)
+                    </p>
+                @else
+                    <div class="mb-4 sm:mb-0"></div>
+                @endif
                 
                 <form method="GET" action="{{ route('catalog.index') }}" class="flex items-center space-x-2">
                     @foreach(request()->except(['sort', 'order']) as $key => $value)

@@ -111,20 +111,45 @@ class CatalogController extends Controller
     /**
      * Search products
      */
-    public function search(Request $request): View
+    public function search(Request $request)
     {
         $query = $request->get('q');
         
-        $products = Product::active()
+        if (empty($query)) {
+            if ($request->ajax() || $request->get('ajax')) {
+                return response()->json(['products' => []]);
+            }
+            return redirect()->route('catalog.index');
+        }
+
+        $productsQuery = Product::active()
             ->inStock()
+            ->with(['primaryImage', 'category'])
             ->where(function($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%")
                   ->orWhere('description', 'LIKE', "%{$query}%")
                   ->orWhere('wood_type', 'LIKE', "%{$query}%");
-            })
-            ->paginate(12)
-            ->withQueryString();
+            });
 
+        // Si c'est une requête AJAX, retourner du JSON
+        if ($request->ajax() || $request->get('ajax')) {
+            $products = $productsQuery->limit(10)->get();
+            
+            $formattedProducts = $products->map(function($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => number_format($product->getPriceForUser(auth()->user()?->isProfessional()), 2),
+                    'wood_type' => $product->getWoodTypeLabel(),
+                    'image' => $product->primaryImage ? $product->primaryImage->image_url : null,
+                ];
+            });
+
+            return response()->json(['products' => $formattedProducts]);
+        }
+
+        // Pour les requêtes normales, retourner la vue
+        $products = $productsQuery->paginate(12)->withQueryString();
         return view('catalog.search', compact('products', 'query'));
     }
 }

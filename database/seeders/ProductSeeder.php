@@ -37,7 +37,7 @@ Conditionné en stère (1m³ empilé), livré sur palette pour faciliter le stoc
                 'min_order_quantity' => 1,
                 'alert_stock_level' => 5,
                 'category_id' => $chauffageCategory->id,
-                'seo_title' => 'Bois de Chêne Sec 33cm - Stère - WoodShop Pro',
+                'seo_title' => 'Bois de Chêne Sec 33cm - Stère - WoodShop',
                 'meta_description' => 'Achetez votre stère de chêne sec 33cm. Séché 24 mois, < 20% humidité. Livraison rapide.',
                 'status' => 'active'
             ],

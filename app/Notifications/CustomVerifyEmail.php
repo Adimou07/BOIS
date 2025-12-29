@@ -31,7 +31,7 @@ class CustomVerifyEmail extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Confirmez votre adresse email - WoodShop Pro')
+            ->subject('Confirmez votre adresse email - WoodShop')
             ->view('emails.verify-email', [
                 'user' => $notifiable,
                 'verificationCode' => $this->verificationCode
