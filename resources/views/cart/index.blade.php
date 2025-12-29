@@ -15,7 +15,7 @@
                         <div class="flow-root">
                             <ul role="list" class="-my-6 divide-y divide-gray-200">
                                 @foreach($cartItems as $item)
-                                <li class="flex py-6" x-data="cartItem({{ $item->id }}, {{ $item->quantity }}, {{ $item->unit_price }})">
+                                <li class="flex py-6" x-data="cartItem({{ $item->id }}, {{ $item->quantity }}, {{ $item->unit_price }}, {{ $item->getTotalPrice() }})">
                                     <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                         @if($item->product->primaryImage)
                                             <img src="{{ $item->product->primaryImage->image_url }}" 
@@ -36,14 +36,22 @@
                                                 <h3>
                                                     <a href="{{ route('catalog.show', $item->product) }}">{{ $item->product->name }}</a>
                                                 </h3>
-                                                <p class="ml-4" x-text="(quantity * {{ $item->unit_price }}).toFixed(2) + '€'"></p>
+                                                <p class="ml-4 text-right">
+                                                    <span class="text-lg font-semibold" x-text="displayTotal + '€'"></span>
+                                                </p>
                                             </div>
                                             <div class="mt-1 text-sm text-gray-500 space-y-1">
-                                                <p>{{ $item->product->getWoodTypeLabel() }} • {{ $item->product->getUsageTypeLabel() }}</p>
-                                                <p>{{ number_format($item->unit_price, 2) }}€ / {{ $item->product->unit_type }}</p>
-                                                @if($item->product->humidity_rate)
-                                                    <p>Humidité: {{ $item->product->humidity_rate }}%</p>
-                                                @endif
+                                                <div class="flex justify-between items-center">
+                                                    <div>
+                                                        <p>{{ $item->product->getWoodTypeLabel() }} • {{ $item->product->getUsageTypeLabel() }}</p>
+                                                        @if($item->product->humidity_rate)
+                                                            <p>Humidité: {{ $item->product->humidity_rate }}%</p>
+                                                        @endif
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <p class="font-medium">{{ number_format($item->unit_price, 2) }}€ / {{ $item->product->unit_type }}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="flex flex-1 items-end justify-between text-sm">
@@ -116,8 +124,8 @@
 
                     <div class="mt-6">
                         @auth
-                            <a href="#" class="w-full bg-amber-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-amber-700 transition-colors block text-center">
-                                Procéder au paiement
+                            <a href="{{ route('orders.checkout') }}" class="w-full bg-amber-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-amber-700 transition-colors block text-center">
+                                <i class="fas fa-credit-card mr-2"></i>Procéder au paiement
                             </a>
                         @else
                             <div class="space-y-3">
@@ -175,12 +183,30 @@
 
 @push('scripts')
 <script>
-function cartItem(itemId, initialQuantity, unitPrice) {
+function cartItem(itemId, initialQuantity, unitPrice, initialTotal) {
     return {
         quantity: initialQuantity,
+        unitPrice: unitPrice,
+        itemTotal: parseFloat(initialTotal),
+        
+        get displayTotal() {
+            return this.itemTotal.toFixed(2);
+        },
         
         updateQuantity(newQuantity) {
             if (newQuantity < 1) return;
+            
+            // Mettre à jour immédiatement l'affichage côté client
+            const oldQuantity = this.quantity;
+            this.quantity = newQuantity;
+            this.itemTotal = newQuantity * this.unitPrice;
+            
+            // Mettre à jour immédiatement le résumé côté client (estimation)
+            const quantityDiff = newQuantity - oldQuantity;
+            const priceDiff = quantityDiff * this.unitPrice;
+            window.dispatchEvent(new CustomEvent('cart-updated-instant', { 
+                detail: { priceDiff: priceDiff, quantityDiff: quantityDiff }
+            }));
             
             fetch(`/panier/update/${itemId}`, {
                 method: 'PUT',
@@ -193,14 +219,23 @@ function cartItem(itemId, initialQuantity, unitPrice) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    // Confirmer la quantité côté serveur
                     this.quantity = newQuantity;
-                    // Mettre à jour le résumé global
+                    // Mettre à jour le résumé global avec les vraies données du serveur
                     window.dispatchEvent(new CustomEvent('cart-updated', { 
                         detail: { total: data.cartTotal, count: data.cartCount }
                     }));
                 } else {
+                    // En cas d'erreur, revenir à l'ancienne quantité
+                    this.quantity = oldQuantity;
                     alert(data.message);
                 }
+            })
+            .catch(error => {
+                // En cas d'erreur réseau, revenir à l'ancienne quantité
+                this.quantity = oldQuantity;
+                console.error('Erreur mise à jour panier:', error);
+                alert('Erreur lors de la mise à jour du panier');
             });
         },
         
@@ -229,9 +264,16 @@ function cartSummary(initialTotal, initialCount) {
         itemCount: initialCount,
         
         init() {
+            // Mise à jour depuis le serveur (données exactes)
             window.addEventListener('cart-updated', (event) => {
                 this.subtotal = event.detail.total;
                 this.itemCount = event.detail.count;
+            });
+            
+            // Mise à jour instantanée côté client (estimation)
+            window.addEventListener('cart-updated-instant', (event) => {
+                this.subtotal = parseFloat(this.subtotal) + event.detail.priceDiff;
+                this.itemCount = parseInt(this.itemCount) + event.detail.quantityDiff;
             });
         }
     }

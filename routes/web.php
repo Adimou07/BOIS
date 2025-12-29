@@ -5,6 +5,7 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrderController;
 
 // Catalogue routes
 Route::get('/', [CatalogController::class, 'index'])->name('home');
@@ -56,4 +57,13 @@ Route::post('/email/resend-code', [AuthController::class, 'resendCode'])
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profil', [AuthController::class, 'profile'])->name('profile');
     Route::put('/profil', [AuthController::class, 'updateProfile'])->name('profile.update');
+    
+    // Order routes
+    Route::prefix('commandes')->name('orders.')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+        Route::post('/', [OrderController::class, 'store'])->name('store');
+        Route::get('/{order}/confirmation', [OrderController::class, 'confirmation'])->name('confirmation');
+        Route::get('/{order}', [OrderController::class, 'show'])->name('show');
+    });
 });
