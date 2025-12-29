@@ -349,7 +349,7 @@ class AuthController extends Controller
      */
     private function sendPasswordResetEmail(User $user, $token)
     {
-        $resetUrl = route('password.reset', ['token' => $token, 'email' => urlencode($user->email)]);
+        $resetUrl = route('password.reset', ['token' => $token, 'email' => $user->email]);
         
         $emailData = [
             'user' => $user,

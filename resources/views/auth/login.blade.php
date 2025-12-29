@@ -68,11 +68,9 @@
                     </div>
 
                     <div class="text-sm">
-                        <a href="{{ route('password.request') }}" class="font-medium text-amber-600 hover:text-amber-500" target="_self" onclick="console.log('Lien cliqué !'); return true;">
+                        <a href="{{ route('password.request') }}" class="font-medium text-amber-600 hover:text-amber-500">
                             Mot de passe oublié ?
                         </a>
-                        <!-- Test temporaire -->
-                        <br><a href="/mot-de-passe-oublie" class="text-red-600 text-xs" target="_self">TEST: Lien direct</a>
                     </div>
                 </div>
 
