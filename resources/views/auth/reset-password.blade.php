@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Connexion - WoodShop Pro')
-@section('meta_description', 'Connectez-vous à votre compte WoodShop Pro pour accéder à vos commandes et prix préférentiels.')
+@section('title', 'Réinitialisation du mot de passe - WoodShop Pro')
+@section('meta_description', 'Définissez votre nouveau mot de passe pour votre compte WoodShop Pro.')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -13,20 +13,20 @@
             </div>
         </div>
         <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Connexion
+            Nouveau mot de passe
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600">
-            Ou
-            <a href="{{ route('register') }}" class="font-medium text-amber-600 hover:text-amber-500">
-                créez votre compte gratuitement
-            </a>
+            Définissez un nouveau mot de passe pour votre compte
         </p>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+            <form method="POST" action="{{ route('password.update') }}" class="space-y-6">
                 @csrf
+
+                <!-- Token -->
+                <input type="hidden" name="token" value="{{ $token }}">
 
                 <!-- Email -->
                 <div>
@@ -34,8 +34,7 @@
                         Adresse email
                     </label>
                     <div class="mt-1">
-                        <input id="email" name="email" type="email" value="{{ old('email') }}" required 
-                               autofocus
+                        <input id="email" name="email" type="email" value="{{ $email ?? old('email') }}" required 
                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-amber-500 focus:border-amber-500 @error('email') border-red-500 @enderror">
                     </div>
                     @error('email')
@@ -46,7 +45,7 @@
                 <!-- Password -->
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700">
-                        Mot de passe
+                        Nouveau mot de passe
                     </label>
                     <div class="mt-1">
                         <input id="password" name="password" type="password" required
@@ -55,53 +54,36 @@
                     @error('password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
+                    <p class="mt-1 text-xs text-gray-500">
+                        Minimum 8 caractères
+                    </p>
                 </div>
 
-                <!-- Remember & Forgot -->
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <input id="remember" name="remember" type="checkbox" 
-                               class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded">
-                        <label for="remember" class="ml-2 block text-sm text-gray-900">
-                            Se souvenir de moi
-                        </label>
-                    </div>
-
-                    <div class="text-sm">
-                        <a href="{{ route('password.request') }}" class="font-medium text-amber-600 hover:text-amber-500" target="_self" onclick="console.log('Lien cliqué !'); return true;">
-                            Mot de passe oublié ?
-                        </a>
-                        <!-- Test temporaire -->
-                        <br><a href="/mot-de-passe-oublie" class="text-red-600 text-xs" target="_self">TEST: Lien direct</a>
+                <!-- Password Confirmation -->
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">
+                        Confirmer le mot de passe
+                    </label>
+                    <div class="mt-1">
+                        <input id="password_confirmation" name="password_confirmation" type="password" required
+                               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-amber-500 focus:border-amber-500">
                     </div>
                 </div>
 
                 <!-- Submit -->
                 <div class="mt-8">
                     <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors">
-                        Se connecter
+                        Réinitialiser le mot de passe
                     </button>
                 </div>
 
-                <!-- Divider -->
-                <div class="mt-6">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500">Pas encore de compte ?</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <a href="{{ route('register') }}" class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors">
-                            Créer un compte
-                        </a>
-                    </div>
+                <!-- Back to login -->
+                <div class="text-center">
+                    <a href="{{ route('login') }}" class="text-sm text-amber-600 hover:text-amber-500 font-medium">
+                        ← Retour à la connexion
+                    </a>
                 </div>
             </form>
-
         </div>
     </div>
 </div>

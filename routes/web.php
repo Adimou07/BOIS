@@ -35,6 +35,12 @@ Route::get('/connexion', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/connexion', [AuthController::class, 'login']);
 Route::post('/deconnexion', [AuthController::class, 'logout'])->name('logout');
 
+// Password Reset routes
+Route::get('/mot-de-passe-oublie', [AuthController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/mot-de-passe-oublie', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+
 // Email verification routes with code
 Route::get('/email/verify', function () {
     return view('auth.verify-email');

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use App\Notifications\CustomVerifyEmail;
 
 class AuthController extends Controller
@@ -225,6 +227,139 @@ class AuthController extends Controller
         return redirect()->back()
             ->with('status', 'verification-code-sent')
             ->with('success', 'Un nouveau code de vérification a été envoyé.');
+    }
+
+    /**
+     * Show forgot password form
+     */
+    public function showForgotPassword()
+    {
+        return view('auth.forgot-password');
+    }
+
+    /**
+     * Send password reset link
+     */
+    public function sendResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ], [
+            'email.required' => 'L\'email est obligatoire.',
+            'email.email' => 'L\'email doit être valide.'
+        ]);
+
+        // Vérifier si l'utilisateur existe
+        $user = User::where('email', $request->email)->first();
+        
+        if (!$user) {
+            return redirect()->back()
+                ->withErrors(['email' => 'Aucun compte n\'est associé à cette adresse email.'])
+                ->withInput();
+        }
+
+        // Créer un token unique
+        $token = Str::random(64);
+        
+        // Supprimer les anciens tokens pour cet email
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+        
+        // Créer un nouveau token
+        DB::table('password_reset_tokens')->insert([
+            'email' => $request->email,
+            'token' => Hash::make($token),
+            'created_at' => now()
+        ]);
+
+        // Envoyer l'email avec le lien
+        $this->sendPasswordResetEmail($user, $token);
+
+        return redirect()->back()
+            ->with('status', 'Un lien de réinitialisation a été envoyé à votre adresse email.');
+    }
+
+    /**
+     * Show reset password form
+     */
+    public function showResetPassword(Request $request, $token)
+    {
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->email
+        ]);
+    }
+
+    /**
+     * Reset password
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ], [
+            'email.required' => 'L\'email est obligatoire.',
+            'email.email' => 'L\'email doit être valide.',
+            'password.required' => 'Le mot de passe est obligatoire.',
+            'password.min' => 'Le mot de passe doit contenir au moins 8 caractères.',
+            'password.confirmed' => 'Les mots de passe ne correspondent pas.',
+        ]);
+
+        // Vérifier le token
+        $resetRecord = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$resetRecord || !Hash::check($request->token, $resetRecord->token)) {
+            return redirect()->back()
+                ->withErrors(['email' => 'Ce lien de réinitialisation est invalide ou expiré.'])
+                ->withInput();
+        }
+
+        // Vérifier si le token n'est pas trop ancien (1 heure)
+        if (now()->diffInMinutes($resetRecord->created_at) > 60) {
+            return redirect()->back()
+                ->withErrors(['email' => 'Ce lien de réinitialisation a expiré. Veuillez demander un nouveau lien.'])
+                ->withInput();
+        }
+
+        // Mettre à jour le mot de passe
+        $user = User::where('email', $request->email)->first();
+        
+        if (!$user) {
+            return redirect()->back()
+                ->withErrors(['email' => 'Utilisateur non trouvé.'])
+                ->withInput();
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        // Supprimer le token utilisé
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        return redirect()->route('login')
+            ->with('success', 'Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter.');
+    }
+
+    /**
+     * Send password reset email
+     */
+    private function sendPasswordResetEmail(User $user, $token)
+    {
+        $resetUrl = route('password.reset', ['token' => $token, 'email' => urlencode($user->email)]);
+        
+        $emailData = [
+            'user' => $user,
+            'resetUrl' => $resetUrl
+        ];
+
+        Mail::send('emails.password-reset', $emailData, function($message) use ($user) {
+            $message->to($user->email, $user->name)
+                    ->subject('Réinitialisation de votre mot de passe - WoodShop Pro');
+        });
     }
 
     /**
