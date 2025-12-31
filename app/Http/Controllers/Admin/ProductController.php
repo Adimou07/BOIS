@@ -54,17 +54,33 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'wood_type' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'price_particular' => 'required|numeric|min:0',
-            'price_professional' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'min_quantity' => 'required|integer|min:1',
-            'packaging' => 'required|string',
-            'usage' => 'required|string',
+            'price_per_unit' => 'required|numeric|min:0',
+            'professional_price' => 'nullable|numeric|min:0',
+            'stock_quantity' => 'required|integer|min:0',
+            'min_order_quantity' => 'required|integer|min:1',
+            'conditioning' => 'required|string',
+            'usage_type' => 'required|string',
             'description' => 'nullable|string',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048'
         ]);
 
-        $product = Product::create($request->except('images'));
+        // Préparer les données en gérant les valeurs nulles
+        $data = $request->except('images');
+        
+        // Gérer les champs optionnels qui ne peuvent pas être null
+        if (empty($data['description'])) {
+            $data['description'] = '';
+        }
+        if (empty($data['professional_price'])) {
+            $data['professional_price'] = null;
+        }
+        
+        // Définir le statut par défaut comme 'active' pour que le produit soit visible
+        if (!isset($data['status'])) {
+            $data['status'] = 'active';
+        }
+        
+        $product = Product::create($data);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {

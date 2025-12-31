@@ -77,6 +77,23 @@
 
         <!-- Products Grid -->
         <div class="lg:col-span-3 mt-8 lg:mt-0">
+            <!-- Barre de recherche en temps réel -->
+            <div class="mb-6">
+                <div class="relative">
+                    <input type="text" 
+                           id="realTimeSearch" 
+                           placeholder="Tapez pour filtrer en temps réel (ex: Acacia, chêne, 20cm...)"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent shadow-sm">
+                    <button id="clearRealTimeSearch" 
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="searchStats" class="text-sm text-green-600 font-medium mt-2"></div>
+            </div>
+
             <!-- Tri et résultats -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                 @php
@@ -106,9 +123,14 @@
 
             <!-- Products Grid -->
             @if($products->count() > 0)
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($products as $product)
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                        <div class="product-card bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+                             data-name="{{ strtolower($product->name) }}" 
+                             data-wood="{{ strtolower(str_replace('_', ' ', $product->wood_type)) }}" 
+                             data-usage="{{ strtolower($product->usage_type) }}"
+                             data-description="{{ strtolower($product->description ?? '') }}"
+                             data-search="{{ strtolower($product->name . ' ' . str_replace('_', ' ', $product->wood_type) . ' ' . $product->usage_type . ' ' . ($product->description ?? '')) }}">
                             <!-- Image -->
                             <div class="relative">
                                 @if($product->images && $product->images->first())
@@ -158,7 +180,7 @@
                                         <span class="text-sm text-gray-500">/ {{ $product->unit_type }}</span>
                                     </div>
                                     
-                                    <a href="{{ route('catalog.show', $product) }}" 
+                                    <a href="/produit/{{ $product->slug }}" 
                                        class="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700 transition-colors text-sm">
                                         Voir détails
                                     </a>
@@ -190,4 +212,107 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('realTimeSearch');
+    const clearButton = document.getElementById('clearRealTimeSearch');
+    const searchStats = document.getElementById('searchStats');
+    const productCards = document.querySelectorAll('.product-card');
+    const productsGrid = document.getElementById('productsGrid');
+    
+    // Fonction de filtrage en temps réel
+    function filterProducts(searchTerm) {
+        searchTerm = searchTerm.toLowerCase().trim();
+        let visibleCount = 0;
+        
+        productCards.forEach(card => {
+            const searchData = card.getAttribute('data-search');
+            
+            if (searchTerm === '' || searchData.includes(searchTerm)) {
+                card.style.display = 'block';
+                card.classList.remove('hidden');
+                visibleCount++;
+                
+                // Mettre en évidence le texte trouvé
+                if (searchTerm !== '') {
+                    highlightText(card, searchTerm);
+                } else {
+                    removeHighlight(card);
+                }
+            } else {
+                card.style.display = 'none';
+                card.classList.add('hidden');
+            }
+        });
+        
+        // Afficher les statistiques
+        if (searchTerm === '') {
+            searchStats.textContent = '';
+            clearButton.classList.add('hidden');
+        } else {
+            searchStats.innerHTML = `<span class="text-green-600 font-medium">${visibleCount} produit(s) trouvé(s) pour "${searchTerm}"</span>`;
+            clearButton.classList.remove('hidden');
+            
+            // Message si aucun résultat
+            if (visibleCount === 0) {
+                searchStats.innerHTML = `<span class="text-red-600">Aucun produit trouvé pour "${searchTerm}". Essayez "chêne", "hêtre", "acacia", "20cm", etc.</span>`;
+            }
+        }
+        
+        // Animation smooth
+        productsGrid.style.opacity = '0.7';
+        setTimeout(() => {
+            productsGrid.style.opacity = '1';
+        }, 100);
+    }
+    
+    // Fonction pour mettre en évidence le texte
+    function highlightText(card, searchTerm) {
+        const titleElement = card.querySelector('h3');
+        if (titleElement) {
+            const originalText = titleElement.textContent;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            titleElement.innerHTML = originalText.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>');
+        }
+    }
+    
+    // Fonction pour supprimer la mise en évidence
+    function removeHighlight(card) {
+        const titleElement = card.querySelector('h3');
+        if (titleElement) {
+            const text = titleElement.textContent; // Récupère le texte sans HTML
+            titleElement.textContent = text; // Remet le texte propre
+        }
+    }
+    
+    // Écouter les frappes de touches avec délai
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            filterProducts(this.value);
+        }, 150); // Délai de 150ms pour éviter trop d'appels
+    });
+    
+    // Bouton de suppression
+    clearButton.addEventListener('click', function() {
+        searchInput.value = '';
+        filterProducts('');
+        searchInput.focus();
+    });
+    
+    // Focus automatique si on tape n'importe où
+    document.addEventListener('keydown', function(e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.ctrlKey && !e.altKey) {
+            if (e.key.length === 1) {
+                searchInput.focus();
+                searchInput.value = e.key;
+                filterProducts(e.key);
+            }
+        }
+    });
+});
+</script>
+
 @endsection

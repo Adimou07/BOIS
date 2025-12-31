@@ -19,6 +19,16 @@ class CatalogController extends Controller
             ->active()
             ->inStock();
 
+        // Recherche textuelle
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('wood_type', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
         // Filtres par catégorie
         if ($request->filled('category')) {
             $query->whereHas('category', function($q) use ($request) {

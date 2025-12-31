@@ -17,7 +17,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 Route::get('/', [CatalogController::class, 'index'])->name('home');
 Route::get('/catalogue', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/recherche', [CatalogController::class, 'search'])->name('catalog.search');
-Route::get('/produit/{product}', [CatalogController::class, 'show'])->name('catalog.show');
+Route::get('/produit/{product:slug}', [CatalogController::class, 'show'])->name('catalog.show');
 
 // Cart routes
 Route::prefix('panier')->name('cart.')->group(function () {

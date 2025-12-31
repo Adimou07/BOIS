@@ -60,13 +60,13 @@
         <!-- Products Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach($products as $product)
-                <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                <a href="/produit/{{ $product->slug }}" class="block bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group">
                     <!-- Image -->
                     <div class="relative">
-                        @if($product->primaryImage)
-                            <img src="{{ $product->primaryImage->image_url }}" 
-                                 alt="{{ $product->primaryImage->alt_text }}"
-                                 class="w-full h-48 object-cover">
+                        @if($product->images && $product->images->first())
+                            <img src="{{ $product->images->first()->image_url }}" 
+                                 alt="{{ $product->images->first()->alt_text ?? $product->name }}"
+                                 class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200">
                         @else
                             <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
                                 <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +76,7 @@
                         @endif
                         
                         <!-- Stock badge -->
-                        @if($product->isLowStock())
+                        @if($product->stock_quantity <= $product->alert_stock_level)
                             <div class="absolute top-2 left-2 bg-orange-500 text-white px-2 py-1 text-xs rounded-full">
                                 Stock limité
                             </div>
@@ -92,13 +92,13 @@
 
                     <!-- Content -->
                     <div class="p-4">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
                             {!! str_ireplace($query, '<mark class="bg-yellow-200">' . $query . '</mark>', $product->name) !!}
                         </h3>
                         
                         <div class="space-y-1 text-sm text-gray-600 mb-3">
-                            <p><span class="font-medium">Essence:</span> {{ $product->getWoodTypeLabel() }}</p>
-                            <p><span class="font-medium">Usage:</span> {{ $product->getUsageTypeLabel() }}</p>
+                            <p><span class="font-medium">Essence:</span> {{ ucfirst(str_replace('_', ' ', $product->wood_type)) }}</p>
+                            <p><span class="font-medium">Usage:</span> {{ ucfirst(str_replace('_', ' ', $product->usage_type)) }}</p>
                             @if($product->humidity_rate)
                                 <p><span class="font-medium">Humidité:</span> {{ $product->humidity_rate }}%</p>
                             @endif
@@ -106,16 +106,20 @@
 
                         <div class="flex items-center justify-between">
                             <div>
+                                @php
+                                    $price = (auth()->check() && auth()->user()->type === 'professional' && $product->professional_price) 
+                                        ? $product->professional_price 
+                                        : $product->price_per_unit;
+                                @endphp
                                 <span class="text-xl font-bold text-amber-600">
-                                    {{ number_format($product->getPriceForUser(auth()->user()?->isProfessional()), 2) }}€
+                                    {{ number_format($price, 2) }}€
                                 </span>
                                 <span class="text-sm text-gray-500">/ {{ $product->unit_type }}</span>
                             </div>
                             
-                            <a href="{{ route('catalog.show', $product) }}" 
-                               class="bg-amber-600 text-white px-4 py-2 rounded-md hover:bg-amber-700 transition-colors text-sm">
+                            <span class="bg-amber-600 text-white px-4 py-2 rounded-md group-hover:bg-amber-700 transition-colors text-sm">
                                 Voir détails
-                            </a>
+                            </span>
                         </div>
                         
                         <!-- Stock info -->
@@ -123,7 +127,7 @@
                             Stock: {{ $product->stock_quantity }} {{ $product->unit_type }}(s)
                         </div>
                     </div>
-                </div>
+                </a>
             @endforeach
         </div>
 

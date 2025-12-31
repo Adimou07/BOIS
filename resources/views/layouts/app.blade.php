@@ -154,122 +154,13 @@
                     </a>
                 </div>
 
-                <!-- Search Bar -->
-                <div class="hidden lg:flex max-w-48 mx-2" x-data="{ 
-                    query: '{{ request('q') }}', 
-                    results: [], 
-                    loading: false,
-                    showResults: false,
-                    searchDisabled: false,
-                    pageJustLoaded: true,
-                    init() {
-                        // Forcer l'état initial propre
-                        this.showResults = false;
-                        this.loading = false;
-                        this.results = [];
-                        
-                        // Empêcher la recherche automatique au chargement
-                        setTimeout(() => {
-                            this.pageJustLoaded = false;
-                        }, 1000);
-                        
-                        // Désactiver la recherche quand un formulaire est soumis
-                        document.addEventListener('submit', () => {
-                            this.searchDisabled = true;
-                            this.showResults = false;
-                            this.loading = false;
-                        });
-                        
-                        // Désactiver aussi avant le déchargement de page
-                        window.addEventListener('beforeunload', () => {
-                            this.searchDisabled = true;
-                            this.showResults = false;
-                            this.loading = false;
-                        });
-                    },
-                    search() {
-                        // Ne pas faire de recherche si la page vient de charger, désactivé ou conditions non remplies
-                        if (this.pageJustLoaded || this.searchDisabled || document.hidden || this.query.length < 2) {
-                            this.results = [];
-                            this.showResults = false;
-                            this.loading = false;
-                            return;
-                        }
-                        
-                        this.loading = true;
-                        fetch(`{{ route('catalog.search') }}?q=${encodeURIComponent(this.query)}&ajax=1`)
-                            .then(response => response.json())
-                            .then(data => {
-                                this.results = data.products;
-                                this.showResults = true;
-                                this.loading = false;
-                            })
-                            .catch(error => {
-                                console.error('Erreur de recherche:', error);
-                                this.loading = false;
-                                this.showResults = false;
-                            });
-                    }
-                }">
-                    <div class="relative w-full">
-                        <div class="relative">
-                            <input type="text" 
-                                   x-model="query"
-                                   @input.debounce.300ms="search()"
-                                   @focus="showResults = query.length >= 2"
-                                   @click.away="showResults = false"
-                                   placeholder="Rechercher..."
-                                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
-                                <svg x-show="!loading" class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                                <svg x-show="loading" class="h-4 w-4 text-amber-500 animate-spin" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="m15.84 12.48-1.84-1.84.84-.84 2.68 2.68-2.68 2.68-.84-.84z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        
-                        <!-- Results dropdown -->
-                        <div x-show="showResults && results.length > 0" 
-                             class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-50 max-h-80 overflow-y-auto">
-                            <template x-for="product in results.slice(0, 6)" :key="product.id">
-                                <a :href="`/catalogue/${product.id}`" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0">
-                                    <div class="flex items-center space-x-3">
-                                        <img :src="product.image || '/images/default-wood.jpg'" :alt="product.name" class="w-10 h-10 object-cover rounded">
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-medium text-gray-900 truncate" x-text="product.name"></p>
-                                            <p class="text-xs text-gray-500" x-text="product.wood_type"></p>
-                                        </div>
-                                        <div class="text-sm font-bold text-amber-600" x-text="`${product.price}€`"></div>
-                                    </div>
-                                </a>
-                            </template>
-                            
-                            <!-- View all results -->
-                            <div x-show="results.length > 6" class="px-4 py-2 bg-gray-50 text-center">
-                                <a :href="`{{ route('catalog.search') }}?q=${encodeURIComponent(query)}`" 
-                                   class="text-sm text-amber-600 hover:text-amber-700 font-medium">
-                                    Voir tous les résultats (<span x-text="results.length"></span>)
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <!-- No results -->
-                        <div x-show="!pageJustLoaded && showResults && query.length >= 2 && results.length === 0 && !loading" 
-                             class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-50 px-4 py-3">
-                            <p class="text-sm text-gray-500 text-center">Aucun résultat trouvé</p>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- User Actions -->
                 <div class="flex items-center space-x-4">
                     @auth
                         <div class="flex items-center space-x-3">
                             <a href="{{ route('admin.dashboard') }}" class="text-sm bg-amber-100 text-amber-700 px-2 py-1 rounded hover:bg-amber-200 transition-colors">
-                                🔧 Admin
+                                Admin
                             </a>
                             <a href="{{ route('profile') }}" class="text-sm text-gray-700 hover:text-amber-600">
                                 {{ auth()->user()->getDisplayName() }}
