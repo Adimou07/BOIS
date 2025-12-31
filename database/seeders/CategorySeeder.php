@@ -28,15 +28,6 @@ class CategorySeeder extends Seeder
                 'is_active' => true,
                 'sort_order' => 2
             ],
-            [
-                'name' => 'Professionnels',
-                'slug' => 'professionnels',
-                'description' => 'Solutions en gros volumes pour restaurants, pizzerias, boulangeries et hôtels',
-                'seo_title' => 'Bois Professionnel - Restaurants et Pizzerias',
-                'meta_description' => 'Fournisseur de bois pour professionnels. Volumes importants, prix dégressifs, livraison programmée.',
-                'is_active' => true,
-                'sort_order' => 3
-            ]
         ];
 
         foreach ($categories as $categoryData) {

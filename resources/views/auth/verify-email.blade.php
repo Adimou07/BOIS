@@ -5,12 +5,6 @@
 @section('content')
 <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <!-- Logo -->
-        <div class="flex justify-center">
-            <div class="w-12 h-12 bg-amber-600 rounded-lg flex items-center justify-center">
-                <span class="text-white font-bold text-lg">W</span>
-            </div>
-        </div>
         <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             Entrez votre code de vérification
         </h2>
@@ -38,11 +32,6 @@
 
             <!-- Instructions -->
             <div class="text-center mb-6">
-                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-amber-100 mb-4">
-                    <svg class="h-8 w-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">
                     Un code de vérification a été envoyé !
                 </h3>
@@ -82,37 +71,22 @@
                             :disabled="code.length !== 6"
                             :class="code.length === 6 ? 'bg-amber-600 hover:bg-amber-700' : 'bg-gray-400 cursor-not-allowed'"
                             class="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors">
-                        ✅ Vérifier mon compte
+                        Vérifier mon compte
                     </button>
                 </div>
             </form>
 
             <!-- Actions alternatives -->
-            <div class="space-y-3">
+            <div class="mt-6">
                 <!-- Renvoyer code -->
                 <form method="POST" action="{{ route('verification.resend-code') }}">
                     @csrf
-                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-amber-300 text-sm font-medium rounded-md text-amber-700 bg-amber-50 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors">
-                        📨 Renvoyer un nouveau code
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+                        Renvoyer un nouveau code
                     </button>
                 </form>
-
-                <!-- Retour à l'accueil -->
-                <a href="{{ route('catalog.index') }}" class="w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors">
-                    🏠 Retour à l'accueil
-                </a>
             </div>
 
-            <!-- Aide -->
-            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                <h4 class="text-sm font-medium text-gray-900 mb-2">❓ Besoin d'aide ?</h4>
-                <ul class="text-xs text-gray-600 space-y-1">
-                    <li>• Le code est composé de 6 chiffres</li>
-                    <li>• Vérifiez votre dossier spam/courrier indésirable</li>
-                    <li>• Le code expire au bout de 15 minutes</li>
-                    <li>• Vous pouvez demander un nouveau code si nécessaire</li>
-                </ul>
-            </div>
 
             @if(auth()->user()->isProfessional())
             <!-- Avantages pro -->

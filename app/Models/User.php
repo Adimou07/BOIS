@@ -33,7 +33,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'company_name',
         'siret',
         'phone',
-        'is_active'
+        'is_active',
+        'is_admin'
     ];
 
     /**
@@ -56,7 +57,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
+            'is_admin' => 'boolean'
         ];
     }
 
@@ -66,6 +68,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isProfessional(): bool
     {
         return $this->type === self::TYPE_PROFESSIONAL;
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->is_admin === true;
     }
 
     /**

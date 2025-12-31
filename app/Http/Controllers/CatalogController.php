@@ -15,7 +15,7 @@ class CatalogController extends Controller
     public function index(Request $request): View
     {
         $query = Product::query()
-            ->with(['category', 'primaryImage'])
+            ->with(['category', 'images'])
             ->active()
             ->inStock();
 
@@ -51,9 +51,10 @@ class CatalogController extends Controller
 
         // Filtre professionnel uniquement
         $user = auth()->user();
-        if (!$user || !$user->isProfessional()) {
-            $query->where('is_professional_only', false);
-        }
+        // TEMPORAIRE : Montrer TOUS les produits pour diagnostic
+        // if (!$user || !$user->isProfessional()) {
+        //     $query->where('is_professional_only', false);
+        // }
 
         // Tri
         $sortBy = $request->get('sort', 'name');
@@ -124,7 +125,7 @@ class CatalogController extends Controller
 
         $productsQuery = Product::active()
             ->inStock()
-            ->with(['primaryImage', 'category'])
+            ->with(['images', 'category'])
             ->where(function($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%")
                   ->orWhere('description', 'LIKE', "%{$query}%")
@@ -141,7 +142,7 @@ class CatalogController extends Controller
                     'name' => $product->name,
                     'price' => number_format($product->getPriceForUser(auth()->user()?->isProfessional()), 2),
                     'wood_type' => $product->getWoodTypeLabel(),
-                    'image' => $product->primaryImage ? $product->primaryImage->image_url : null,
+                    'image' => $product->images->first() ? $product->images->first()->image_url : null,
                 ];
             });
 

@@ -139,6 +139,24 @@
                         @endauth
                     </div>
 
+                    <!-- Payment Information -->
+                    <div class="mt-6 border-t border-gray-200 pt-6">
+                        <h3 class="text-sm font-medium text-gray-900 mb-3">
+                            <i class="fas fa-credit-card text-blue-500 mr-2"></i>Modalités de paiement
+                        </h3>
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200">
+                            <div class="flex items-start space-x-2">
+                                <div class="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-shipping-fast text-green-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-900">Frais de livraison inclus</h4>
+                                    <p class="text-sm text-gray-600">Aucun frais supplémentaire</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Avantages -->
                     <div class="mt-6 border-t border-gray-200 pt-6">
                         <h3 class="text-sm font-medium text-gray-900 mb-3">Nos garanties</h3>

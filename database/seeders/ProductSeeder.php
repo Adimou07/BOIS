@@ -162,7 +162,7 @@ Prix dégressifs à partir de 5 big bags. Facturation professionnelle avec condi
             // Ajouter des images d'exemple
             ProductImage::create([
                 'product_id' => $product->id,
-                'image_url' => '/images/products/' . $product->slug . '-1.jpg',
+                'image_url' => '/storage/images/products/' . $product->slug . '-1.jpg',
                 'alt_text' => $product->name . ' - Image principale',
                 'sort_order' => 1,
                 'is_primary' => true

@@ -49,7 +49,12 @@ class Product extends Model
         'sapin' => 'Sapin',
         'epicea' => 'Épicéa',
         'bouleau' => 'Bouleau',
-        'melange' => 'Mélange'
+        'melange' => 'Mélange',
+        'fresne' => 'Frêne',
+        'acacia' => 'Acacia',
+        'chataignier' => 'Châtaignier',
+        'pommier' => 'Pommier',
+        'cerisier' => 'Cerisier'
     ];
 
     const USAGE_TYPES = [

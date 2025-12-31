@@ -137,13 +137,19 @@
                     <a href="{{ route('catalog.index') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
                         Catalogue
                     </a>
-                    <a href="#" class="text-gray-700 hover:text-amber-600 transition-colors">
-                        Professionnels
+                    @auth
+                    <a href="{{ route('dashboard.index') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
+                        Mes Achats
                     </a>
-                    <a href="#" class="text-gray-700 hover:text-amber-600 transition-colors">
+                    @else
+                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
+                        Mon Espace
+                    </a>
+                    @endauth
+                    <a href="{{ route('conseils.index') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
                         Conseils
                     </a>
-                    <a href="#" class="text-gray-700 hover:text-amber-600 transition-colors">
+                    <a href="{{ route('contact.show') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
                         Contact
                     </a>
                 </div>
@@ -262,6 +268,9 @@
                 <div class="flex items-center space-x-4">
                     @auth
                         <div class="flex items-center space-x-3">
+                            <a href="{{ route('admin.dashboard') }}" class="text-sm bg-amber-100 text-amber-700 px-2 py-1 rounded hover:bg-amber-200 transition-colors">
+                                🔧 Admin
+                            </a>
                             <a href="{{ route('profile') }}" class="text-sm text-gray-700 hover:text-amber-600">
                                 {{ auth()->user()->getDisplayName() }}
                             </a>
@@ -280,6 +289,7 @@
                             Inscription
                         </a>
                     @endauth
+
 
                     <!-- Panier -->
                     <a href="{{ route('cart.index') }}" class="relative p-2 text-gray-700 hover:text-amber-600 transition-colors">

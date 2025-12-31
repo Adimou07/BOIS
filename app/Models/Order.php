@@ -30,11 +30,18 @@ class Order extends Model
         'company_name',
         'siret',
         'payment_method',
+        'payment_type',
+        'deposit_amount',
+        'remaining_amount',
+        'deposit_status',
+        'remaining_status',
         'payment_status',
         'payment_reference',
         'notes',
         'shipped_at',
         'delivered_at',
+        'deposit_paid_at',
+        'remaining_paid_at',
     ];
 
     protected $casts = [
@@ -42,8 +49,12 @@ class Order extends Model
         'delivery_cost' => 'decimal:2',
         'tax_amount' => 'decimal:2',
         'total' => 'decimal:2',
+        'deposit_amount' => 'decimal:2',
+        'remaining_amount' => 'decimal:2',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
+        'deposit_paid_at' => 'datetime',
+        'remaining_paid_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -106,5 +117,75 @@ class Order extends Model
     public function canBeCancelled(): bool
     {
         return in_array($this->status, ['pending', 'confirmed']);
+    }
+
+    /**
+     * Check if order uses partial payment
+     */
+    public function isPartialPayment(): bool
+    {
+        return $this->payment_type === 'partial';
+    }
+
+    /**
+     * Check if deposit is paid
+     */
+    public function isDepositPaid(): bool
+    {
+        return $this->deposit_status === 'paid';
+    }
+
+    /**
+     * Check if remaining amount is paid
+     */
+    public function isRemainingPaid(): bool
+    {
+        return $this->remaining_status === 'paid';
+    }
+
+    /**
+     * Check if order is fully paid
+     */
+    public function isFullyPaid(): bool
+    {
+        if ($this->payment_type === 'full') {
+            return $this->payment_status === 'paid';
+        }
+        
+        return $this->isDepositPaid() && $this->isRemainingPaid();
+    }
+
+    /**
+     * Get payment status label
+     */
+    public function getPaymentStatusLabel(): string
+    {
+        if ($this->payment_type === 'full') {
+            return match($this->payment_status) {
+                'paid' => 'Payé',
+                'pending' => 'En attente',
+                'failed' => 'Échec',
+                default => 'Inconnu'
+            };
+        }
+
+        if ($this->isFullyPaid()) {
+            return 'Entièrement payé';
+        }
+
+        if ($this->isDepositPaid()) {
+            return "Acompte payé ({$this->deposit_amount}€) - Solde à la livraison ({$this->remaining_amount}€)";
+        }
+
+        return "Acompte en attente ({$this->deposit_amount}€)";
+    }
+
+    /**
+     * Calculate deposit and remaining amounts
+     */
+    public function calculatePaymentSplit(float $depositPercentage = 50): void
+    {
+        $this->deposit_amount = round($this->total * ($depositPercentage / 100), 2);
+        $this->remaining_amount = round($this->total - $this->deposit_amount, 2);
     }
 }

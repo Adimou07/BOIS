@@ -147,6 +147,53 @@
                         @enderror
                     </div>
                 </div>
+
+                <!-- Payment Information -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow p-6 border border-blue-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-credit-card text-blue-500 mr-2"></i>Modalités de paiement
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-truck text-blue-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Paiement à la livraison</h4>
+                                <p class="text-sm text-gray-600">Le règlement s'effectue directement lors de la réception de votre commande.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-shipping-fast text-green-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Frais de livraison inclus</h4>
+                                <p class="text-sm text-gray-600">Aucun frais supplémentaire ne vous sera demandé, la livraison est entièrement comprise.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-hand-holding-usd text-amber-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Acompte de 50%</h4>
+                                <p class="text-sm text-gray-600">Versez la moitié du montant maintenant, le solde sera réglé à la livraison.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 p-3 bg-white rounded-lg border border-blue-200">
+                        <div class="flex items-center">
+                            <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                            <span class="text-sm font-medium text-gray-900">Mode de paiement accepté :</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">Virement bancaire lors de la livraison.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Order Summary -->

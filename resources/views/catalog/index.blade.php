@@ -59,44 +59,8 @@
                         </select>
                     </div>
 
-                    <!-- Type d'usage -->
-                    <div class="mb-6">
-                        <h3 class="text-sm font-medium text-gray-900 mb-3">Usage</h3>
-                        <select name="usage_type" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-amber-500 focus:border-amber-500">
-                            <option value="">Tous usages</option>
-                            @foreach($usageTypes as $key => $label)
-                            <option value="{{ $key }}" {{ request('usage_type') === $key ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
 
-                    <!-- Conditionnement -->
-                    <div class="mb-6">
-                        <h3 class="text-sm font-medium text-gray-900 mb-3">Conditionnement</h3>
-                        <select name="conditioning" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-amber-500 focus:border-amber-500">
-                            <option value="">Tous conditionnements</option>
-                            @foreach($conditioningTypes as $key => $label)
-                            <option value="{{ $key }}" {{ request('conditioning') === $key ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
 
-                    <!-- Prix -->
-                    <div class="mb-6">
-                        <h3 class="text-sm font-medium text-gray-900 mb-3">Prix (€)</h3>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="number" name="price_min" value="{{ request('price_min') }}" 
-                                   placeholder="Min" step="0.01"
-                                   class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-amber-500 focus:border-amber-500">
-                            <input type="number" name="price_max" value="{{ request('price_max') }}" 
-                                   placeholder="Max" step="0.01"
-                                   class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-amber-500 focus:border-amber-500">
-                        </div>
-                    </div>
 
                     <!-- Buttons -->
                     <div class="space-y-2">
@@ -116,7 +80,7 @@
             <!-- Tri et résultats -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                 @php
-                    $hasFilters = request()->hasAny(['category', 'wood_type', 'usage_type', 'conditioning', 'price_min', 'price_max', 'q']);
+                    $hasFilters = request()->hasAny(['category', 'wood_type', 'q']);
                 @endphp
                 @if($hasFilters)
                     <p class="text-sm text-gray-700 mb-4 sm:mb-0">
@@ -147,9 +111,9 @@
                         <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                             <!-- Image -->
                             <div class="relative">
-                                @if($product->primaryImage)
-                                    <img src="{{ $product->primaryImage->image_url }}" 
-                                         alt="{{ $product->primaryImage->alt_text }}"
+                                @if($product->images && $product->images->first())
+                                    <img src="{{ $product->images->first()->image_url }}" 
+                                         alt="{{ $product->images->first()->alt_text ?? $product->name }}"
                                          class="w-full h-48 object-cover">
                                 @else
                                     <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
