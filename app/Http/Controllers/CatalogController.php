@@ -66,9 +66,9 @@ class CatalogController extends Controller
         //     $query->where('is_professional_only', false);
         // }
 
-        // Tri
-        $sortBy = $request->get('sort', 'name');
-        $sortOrder = $request->get('order', 'asc');
+        // Tri - Par défaut les nouveaux produits en premier
+        $sortBy = $request->get('sort', 'created_at');
+        $sortOrder = $request->get('order', 'desc');
         
         switch ($sortBy) {
             case 'price':
@@ -77,8 +77,12 @@ class CatalogController extends Controller
             case 'stock':
                 $query->orderBy('stock_quantity', $sortOrder);
                 break;
-            default:
+            case 'name':
                 $query->orderBy('name', $sortOrder);
+                break;
+            case 'created_at':
+            default:
+                $query->orderBy('created_at', $sortOrder);
         }
 
         $products = $query->paginate(12)->withQueryString();

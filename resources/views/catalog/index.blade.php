@@ -134,7 +134,7 @@
                             <!-- Image -->
                             <div class="relative">
                                 @if($product->images && $product->images->first())
-                                    <img src="{{ $product->images->first()->image_url }}" 
+                                    <img src="{{ asset($product->images->first()->image_url) }}" 
                                          alt="{{ $product->images->first()->alt_text ?? $product->name }}"
                                          class="w-full h-48 object-cover">
                                 @else
@@ -221,13 +221,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const productCards = document.querySelectorAll('.product-card');
     const productsGrid = document.getElementById('productsGrid');
     
+    // Fonction pour supprimer les accents
+    function removeAccents(str) {
+        return str.normalize('NFD')
+                 .replace(/[\u0300-\u036f]/g, '')
+                 .toLowerCase();
+    }
+    
     // Fonction de filtrage en temps réel
     function filterProducts(searchTerm) {
-        searchTerm = searchTerm.toLowerCase().trim();
+        searchTerm = removeAccents(searchTerm.toLowerCase().trim());
         let visibleCount = 0;
         
         productCards.forEach(card => {
-            const searchData = card.getAttribute('data-search');
+            const searchData = removeAccents(card.getAttribute('data-search'));
             
             if (searchTerm === '' || searchData.includes(searchTerm)) {
                 card.style.display = 'block';

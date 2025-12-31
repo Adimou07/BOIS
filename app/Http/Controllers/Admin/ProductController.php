@@ -86,9 +86,10 @@ class ProductController extends Controller
             foreach ($request->file('images') as $index => $image) {
                 $path = $image->store('products', 'public');
                 $product->images()->create([
-                    'image_url' => asset('storage/' . $path),
+                    'image_url' => 'storage/' . $path,
                     'alt_text' => $product->name,
-                    'sort_order' => $index
+                    'sort_order' => $index,
+                    'is_primary' => $index === 0
                 ]);
             }
         }
@@ -175,9 +176,10 @@ class ProductController extends Controller
             foreach ($request->file('new_images') as $index => $image) {
                 $path = $image->store('products', 'public');
                 $product->images()->create([
-                    'image_url' => asset('storage/' . $path),
+                    'image_url' => 'storage/' . $path,
                     'alt_text' => $product->name,
-                    'sort_order' => $maxOrder + $index + 1
+                    'sort_order' => $maxOrder + $index + 1,
+                    'is_primary' => $maxOrder === 0 && $index === 0
                 ]);
             }
         }

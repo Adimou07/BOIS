@@ -45,7 +45,7 @@
                 <div class="grid grid-cols-4 gap-6">
                     @foreach($product->images as $image)
                     <div class="relative h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium uppercase text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-amber-500">
-                        <img src="{{ $image->image_url }}" alt="{{ $image->alt_text }}" class="w-full h-full object-center object-cover">
+                        <img src="{{ asset($image->image_url) }}" alt="{{ $image->alt_text }}" class="w-full h-full object-center object-cover">
                     </div>
                     @endforeach
                 </div>
@@ -55,7 +55,7 @@
             <!-- Main image -->
             <div class="w-full aspect-w-1 aspect-h-1">
                 @if($product->primaryImage)
-                    <img src="{{ $product->primaryImage->image_url }}" 
+                    <img src="{{ asset($product->primaryImage->image_url) }}" 
                          alt="{{ $product->primaryImage->alt_text }}" 
                          class="w-full h-full object-center object-cover sm:rounded-lg">
                 @else
@@ -198,7 +198,7 @@
             <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                 <div class="relative h-48">
                     @if($relatedProduct->primaryImage)
-                        <img src="{{ $relatedProduct->primaryImage->image_url }}" 
+                        <img src="{{ asset($relatedProduct->primaryImage->image_url) }}" 
                              alt="{{ $relatedProduct->primaryImage->alt_text }}"
                              class="w-full h-full object-cover">
                     @else

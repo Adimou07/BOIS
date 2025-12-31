@@ -64,7 +64,7 @@
                     <!-- Image -->
                     <div class="relative">
                         @if($product->images && $product->images->first())
-                            <img src="{{ $product->images->first()->image_url }}" 
+                            <img src="{{ asset($product->images->first()->image_url) }}" 
                                  alt="{{ $product->images->first()->alt_text ?? $product->name }}"
                                  class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200">
                         @else
