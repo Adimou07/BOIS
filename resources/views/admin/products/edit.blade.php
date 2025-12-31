@@ -149,7 +149,7 @@
                                 <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow" id="image-{{ $image->id }}">
                                     <!-- Image -->
                                     <div class="relative">
-                                        <img src="{{ $image->image_url }}" 
+                                        <img src="{{ $image->full_image_url }}" 
                                              alt="{{ $image->alt_text ?? 'Image produit' }}" 
                                              class="w-full h-32 object-cover">
                                         
@@ -163,7 +163,7 @@
                                                 <button type="button" onclick="toggleImageForDeletion({{ $image->id }})" 
                                                         class="text-xs underline mt-1">Annuler</button>
                                             </div>
-                                            <input type="checkbox" name="remove_images[]" value="{{ $image->id }}" id="delete-{{ $image->id }}" class="sr-only" checked>
+                                            <input type="checkbox" name="remove_images[]" value="{{ $image->id }}" id="delete-{{ $image->id }}" class="sr-only">
                                         </div>
                                         
                                         <!-- Indicateur image primaire -->

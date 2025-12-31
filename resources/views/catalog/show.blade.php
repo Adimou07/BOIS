@@ -87,9 +87,9 @@
             <!-- Badges -->
             <div class="mt-4 flex flex-wrap gap-2">
                 @if($product->isLowStock())
-                    <span class="badge badge-warning">Stock limité ({{ $product->stock_quantity }})</span>
+                    <span class="badge badge-warning">Stock limité</span>
                 @else
-                    <span class="badge badge-success">En stock ({{ $product->stock_quantity }})</span>
+                    <span class="badge badge-success">En stock</span>
                 @endif
                 
                 @if($product->is_professional_only)

@@ -112,6 +112,7 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        
         // Validation plus souple pour les mises à jour
         $rules = [
             'name' => 'sometimes|required|string|max:255',
@@ -142,17 +143,27 @@ class ProductController extends Controller
         $dataToUpdate = $request->except(['new_images', 'remove_images', '_token', '_method']);
         
         // Nettoyer les données vides pour éviter d'écraser avec des valeurs nulles
-        $dataToUpdate = array_filter($dataToUpdate, function($value) {
+        // MAIS garder les champs qui peuvent être vides légitimement
+        $dataToUpdate = array_filter($dataToUpdate, function($value, $key) {
+            // Permettre les champs qui peuvent être vides/null
+            $allowedEmptyFields = ['description', 'short_description', 'professional_price', 'seo_title', 'meta_description', 'notes'];
+            
+            if (in_array($key, $allowedEmptyFields)) {
+                return true; // Garder même si vide
+            }
+            
             return $value !== null && $value !== '';
-        });
+        }, ARRAY_FILTER_USE_BOTH);
 
         if (!empty($dataToUpdate)) {
             $product->update($dataToUpdate);
         }
 
-        // Supprimer les images sélectionnées
-        if ($request->has('remove_images')) {
-            foreach ($request->remove_images as $imageId) {
+        
+        // Supprimer les images sélectionnées - SEULEMENT si il y a vraiment des IDs valides
+        $removeImages = $request->input('remove_images', []);
+        if (!empty($removeImages) && is_array($removeImages)) {
+            foreach ($removeImages as $imageId) {
                 $image = $product->images()->find($imageId);
                 if ($image) {
                     // Extraire le chemin du fichier depuis l'URL
@@ -184,7 +195,15 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('admin.products.index')->with('success', 'Produit mis à jour avec succès !');
+        // Recharger les relations pour s'assurer de la cohérence
+        $product->load('images');
+        
+        $debugMsg = "Produit mis à jour avec succès !";
+        
+        // Forcer le rechargement des images depuis la DB
+        $product = Product::with('images')->find($product->id);
+        
+        return redirect()->route('admin.products.edit', $product)->with('success', $debugMsg);
     }
 
     public function destroy(Product $product)

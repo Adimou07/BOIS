@@ -169,7 +169,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     @foreach($product->images as $image)
                         <div class="aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden">
-                            <img src="{{ asset('storage/' . $image->path) }}" alt="{{ $image->alt_text }}" class="w-full h-full object-center object-cover">
+                            <img src="{{ $image->full_image_url }}" alt="{{ $image->alt_text }}" class="w-full h-full object-center object-cover">
                         </div>
                     @endforeach
                 </div>

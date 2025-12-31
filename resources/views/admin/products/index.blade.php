@@ -110,7 +110,7 @@
                         <!-- Image -->
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($product->images->first())
-                                <img src="{{ $product->images->first()->image_url }}" 
+                                <img src="{{ $product->images->first()->full_image_url }}" 
                                      alt="{{ $product->images->first()->alt_text ?? $product->name }}" 
                                      class="w-12 h-12 rounded-lg object-cover">
                             @else

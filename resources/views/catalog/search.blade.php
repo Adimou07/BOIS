@@ -122,10 +122,6 @@
                             </span>
                         </div>
                         
-                        <!-- Stock info -->
-                        <div class="mt-2 text-xs text-gray-500">
-                            Stock: {{ $product->stock_quantity }} {{ $product->unit_type }}(s)
-                        </div>
                     </div>
                 </a>
             @endforeach
