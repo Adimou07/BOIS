@@ -36,9 +36,9 @@
                         <label class="block text-sm font-medium text-gray-700">Essence de bois</label>
                         <select name="wood_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
                             <option value="">Sélectionnez une essence</option>
-                            @foreach(['chene', 'hetre', 'charme', 'fruitiers', 'frene', 'erable', 'bouleau', 'chataignier', 'aulne', 'tilleul', 'peuplier', 'acacia', 'melange_dur', 'melange_tendre'] as $wood)
+                            @foreach(array_keys(\App\Models\Product::WOOD_TYPES) as $wood)
                                 <option value="{{ $wood }}" {{ old('wood_type', $product->wood_type) === $wood ? 'selected' : '' }}>
-                                    {{ ucfirst(str_replace('_', ' ', $wood)) }}
+                                    {{ \App\Models\Product::WOOD_TYPES[$wood] }}
                                 </option>
                             @endforeach
                         </select>
