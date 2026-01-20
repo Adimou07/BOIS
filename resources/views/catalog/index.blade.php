@@ -46,18 +46,6 @@
                         </div>
                     </div>
 
-                    <!-- Essence de bois -->
-                    <div class="mb-6">
-                        <h3 class="text-sm font-medium text-gray-900 mb-3">Essence de bois</h3>
-                        <select name="wood_type" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-amber-500 focus:border-amber-500">
-                            <option value="">Toutes les essences</option>
-                            @foreach($woodTypes as $key => $label)
-                            <option value="{{ $key }}" {{ request('wood_type') === $key ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
 
 
 
@@ -67,9 +55,6 @@
                         <button type="submit" class="w-full bg-amber-600 text-white py-2 px-4 rounded-md hover:bg-amber-700 transition-colors">
                             Appliquer les filtres
                         </button>
-                        <a href="{{ route('catalog.index') }}" class="block w-full text-center border border-gray-300 py-2 px-4 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
-                            Réinitialiser
-                        </a>
                     </div>
                 </form>
             </div>

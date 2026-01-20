@@ -25,6 +25,7 @@ class Category extends Model
         'is_active' => 'boolean'
     ];
 
+
     /**
      * Boot method to auto-generate slug
      */

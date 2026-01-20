@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', 'WoodShop - Vente de bois de chauffage et cuisson')</title>
-    <meta name="description" content="@yield('meta_description', 'Vente en ligne de bois de chauffage et cuisson de qualité. Livraison rapide partout en France.')">
+    <meta name="description" content="@yield('meta_description', 'Vente en ligne de bois de chauffage et cuisson de qualité. Livraison rapide partout en France.')"
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -133,32 +133,31 @@
                 </div>
 
                 <!-- Navigation Desktop -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ route('catalog.index') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
+                <div class="hidden md:flex items-center justify-center space-x-8 flex-1 max-w-lg">
+                    <a href="{{ route('catalog.index') }}" class="text-gray-700 hover:text-amber-600 transition-colors font-medium">
                         Catalogue
                     </a>
-                    @auth
-                    <a href="{{ route('dashboard.index') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
-                        Mes Achats
-                    </a>
-                    @else
-                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
-                        Mon Espace
-                    </a>
-                    @endauth
                     <a href="{{ route('conseils.index') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
                         Conseils
                     </a>
                     <a href="{{ route('contact.show') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
                         Contact
                     </a>
+                    @auth
+                    <a href="{{ route('dashboard.index') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
+                        Mes Commandes
+                    </a>
+                    @else
+                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-amber-600 transition-colors">
+                        Mon Espace
+                    </a>
+                    @endauth
                 </div>
-
 
                 <!-- User Actions -->
                 <div class="flex items-center space-x-4">
                     @auth
-                        <div class="flex items-center space-x-3">
+                        <div class=\"flex items-center space-x-3\">
                             <a href="{{ route('admin.dashboard') }}" class="text-sm bg-amber-100 text-amber-700 px-2 py-1 rounded hover:bg-amber-200 transition-colors">
                                 Admin
                             </a>
@@ -167,7 +166,7 @@
                             </a>
                             <form method="POST" action="{{ route('logout') }}" class="inline">
                                 @csrf
-                                <button type="submit" class="text-sm text-gray-500 hover:text-gray-700">
+                                <button type="submit" class="text-sm text-red-600 hover:text-red-800 font-bold">
                                     Déconnexion
                                 </button>
                             </form>
@@ -207,9 +206,14 @@
             <div x-show="mobileMenuOpen" class="md:hidden py-4 border-t">
                 <div class="space-y-2">
                     <a href="{{ route('catalog.index') }}" class="block px-3 py-2 text-gray-700">Catalogue</a>
-                    <a href="#" class="block px-3 py-2 text-gray-700">Professionnels</a>
-                    <a href="#" class="block px-3 py-2 text-gray-700">Conseils</a>
-                    <a href="#" class="block px-3 py-2 text-gray-700">Contact</a>
+                    <a href="{{ route('conseils.index') }}" class="block px-3 py-2 text-gray-700">Conseils</a>
+                    <a href="{{ route('contact.show') }}" class="block px-3 py-2 text-gray-700">Contact</a>
+                    @auth
+                        <a href="{{ route('dashboard.index') }}" class="block px-3 py-2 text-gray-700">Mes Achats</a>
+                    @else
+                        <a href="{{ route('login') }}" class="block px-3 py-2 text-gray-700">Connexion</a>
+                        <a href="{{ route('register') }}" class="block px-3 py-2 text-gray-700">Inscription</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -231,17 +235,17 @@
                 <div>
                     <h4 class="text-md font-semibold mb-4">Produits</h4>
                     <ul class="space-y-2 text-gray-300">
-                        <li><a href="#" class="hover:text-white">Bois de chauffage</a></li>
-                        <li><a href="#" class="hover:text-white">Bois de cuisson</a></li>
-                        <li><a href="#" class="hover:text-white">Professionnels</a></li>
+                        <li><a href="{{ route('catalog.index') }}" class="hover:text-white">Bois de chauffage</a></li>
+                        <li><a href="{{ route('catalog.index') }}" class="hover:text-white">Bois de cuisson</a></li>
+                        <li><a href="{{ route('catalog.index') }}" class="hover:text-white">Professionnels</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-md font-semibold mb-4">Support</h4>
                     <ul class="space-y-2 text-gray-300">
-                        <li><a href="#" class="hover:text-white">Livraison</a></li>
+                        <li><a href="{{ route('delivery.zones') }}" class="hover:text-white">Livraison</a></li>
                         <li><a href="#" class="hover:text-white">FAQ</a></li>
-                        <li><a href="#" class="hover:text-white">Contact</a></li>
+                        <li><a href="{{ route('contact.show') }}" class="hover:text-white">Contact</a></li>
                     </ul>
                 </div>
                 <div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Inscription - WoodShop')
+@section('title', __('ui.register_title') . ' - WoodShop')
 @section('meta_description', 'Créez votre compte WoodShop pour commander du bois de qualité en ligne.')
 
 @section('content')
@@ -13,12 +13,12 @@
             </div>
         </div>
         <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Créer un compte
+            {{ __('ui.register_title') }}
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600">
-            Ou
+            {{ __('ui.already_account') }}
             <a href="{{ route('login') }}" class="font-medium text-amber-600 hover:text-amber-500">
-                connectez-vous à votre compte existant
+                {{ __('ui.sign_in') }}
             </a>
         </p>
     </div>

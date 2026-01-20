@@ -38,6 +38,7 @@ class Product extends Model
         'is_professional_only' => 'boolean'
     ];
 
+
     /**
      * Constants for enum values
      */
